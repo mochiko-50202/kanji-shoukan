@@ -1,5 +1,5 @@
-const CACHE = 'kanji-shoukan-v1';
-const ASSETS = ['./index.html', './manifest.json'];
+const CACHE = 'kanji-shoukan-v3';
+const ASSETS = ['./index.html', './manifest.json', './icon.png', './dictionary.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
