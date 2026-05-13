@@ -1,8 +1,10 @@
 {
+  "id": "/kanji-shoukan/",
   "name": "漢字召喚",
   "short_name": "漢字召喚",
   "description": "ひらがなを入力して漢字を大きく表示するアプリ",
-  "start_url": "./index.html",
+  "start_url": "/kanji-shoukan/",
+  "scope": "/kanji-shoukan/",
   "display": "standalone",
   "background_color": "#111111",
   "theme_color": "#111111",
