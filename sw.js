@@ -1,4 +1,4 @@
-const CACHE = 'kanji-shoukan-v7';
+const CACHE = 'kanji-shoukan-v8';
 
 self.addEventListener('install', e => {
   self.skipWaiting();
