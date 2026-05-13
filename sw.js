@@ -1,4 +1,4 @@
-const CACHE = 'kanji-shoukan-v4';
+const CACHE = 'kanji-shoukan-v5';
 const ASSETS = ['./index.html', './manifest.json', './icon.png', './dictionary.js'];
 
 self.addEventListener('install', e => {
