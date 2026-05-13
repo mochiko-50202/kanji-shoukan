@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>漢字召喚 QRコード</title>
+  <style>
+    body { background:#111; color:#d4a0b0; font-family:sans-serif; text-align:center; padding:40px 20px; }
+    h2 { font-size:22px; margin-bottom:8px; }
+    p { color:#888; font-size:14px; margin-bottom:28px; }
+    #qrcode { display:inline-block; background:#fff; padding:16px; border-radius:16px; }
+    .url { margin-top:20px; background:#1e1e1e; border-radius:12px; padding:14px 20px;
+           font-size:14px; color:#d4a0b0; word-break:break-all; }
+    .note { margin-top:12px; color:#666; font-size:12px; line-height:1.8; }
+  </style>
+</head>
+<body>
+  <h2>漢字召喚 をスマホで開く</h2>
+  <p>スマホのカメラでQRコードを読み取ってください</p>
+  <div id="qrcode"></div>
+  <div class="url">https://slow-bears-wear.loca.lt</div>
+  <p class="note">⚠️ 初回アクセス時に確認画面が出たら<br>「Click to Submit」を押してください</p>
+
+  <script src="qrcode.min.js"></script>
+  <script>
+    new QRCode(document.getElementById('qrcode'), {
+      text: 'https://slow-bears-wear.loca.lt',
+      width: 220,
+      height: 220,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+    });
+  </script>
+</body>
+</html>

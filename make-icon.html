@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>アイコン生成</title>
+  <style>
+    body { background:#222; color:#fff; font-family:sans-serif; text-align:center; padding:30px; }
+    canvas { border:1px solid #444; margin:20px; }
+    button { background:#d4a0b0; color:#111; border:none; padding:14px 30px;
+             font-size:16px; font-weight:bold; border-radius:8px; cursor:pointer; margin:8px; }
+    p { color:#aaa; font-size:14px; }
+  </style>
+</head>
+<body>
+  <h2 style="color:#d4a0b0">漢字召喚 アイコン生成</h2>
+  <canvas id="c" width="512" height="512"></canvas>
+  <br>
+  <button onclick="download('icon.png', 512)">icon.png を保存（512px）</button>
+  <button onclick="download('icon-1024.png', 1024)">icon-1024.png を保存（1024px）</button>
+  <p>保存したファイルを kanji-shoukan フォルダに入れてください</p>
+
+  <script>
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+
+    function drawIcon(size) {
+      const c = document.createElement('canvas');
+      c.width = size;
+      c.height = size;
+      const g = c.getContext('2d');
+      const s = size / 512;
+
+      // 背景
+      g.fillStyle = '#111111';
+      g.fillRect(0, 0, size, size);
+
+      // 外枠の円
+      g.strokeStyle = '#d4a0b0';
+      g.lineWidth = 14 * s;
+      g.beginPath();
+      g.arc(size/2, size/2, 218 * s, 0, Math.PI * 2);
+      g.stroke();
+
+      // 内側の細い円
+      g.lineWidth = 4 * s;
+      g.beginPath();
+      g.arc(size/2, size/2, 200 * s, 0, Math.PI * 2);
+      g.stroke();
+
+      // テキスト
+      g.fillStyle = '#d4a0b0';
+      g.textAlign = 'center';
+      g.textBaseline = 'alphabetic';
+
+      const fontSize = 148 * s;
+      g.font = `bold ${fontSize}px 'Hiragino Mincho ProN', 'Yu Mincho', serif`;
+
+      g.fillText('漢字', size/2, 230 * s);
+      g.fillText('召喚', size/2, 375 * s);
+
+      return c;
+    }
+
+    // プレビュー描画
+    const preview = drawIcon(512);
+    ctx.drawImage(preview, 0, 0);
+
+    function download(filename, size) {
+      const c = drawIcon(size);
+      const a = document.createElement('a');
+      a.download = filename;
+      a.href = c.toDataURL('image/png');
+      a.click();
+    }
+  </script>
+</body>
+</html>

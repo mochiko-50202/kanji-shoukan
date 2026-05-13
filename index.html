@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>漢字召喚</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.png">
+  <meta name="theme-color" content="#111111">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="漢字召喚">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: #111111;
+      color: #d4a0b0;
+      font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Yu Gothic', sans-serif;
+      min-height: 100vh;
+      padding: 16px 16px 80px;
+    }
+
+    /* ── ヘッダー ── */
+    header {
+      display: flex;
+      justify-content: center;
+      padding: 20px 0 16px;
+    }
+
+    .stamp {
+      width: 110px;
+      height: 110px;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 0 20px #d4a0b040;
+    }
+
+    .stamp img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.3);
+    }
+
+    /* ── 検索バー ── */
+    .search-wrap {
+      position: relative;
+      margin: 16px 0 12px;
+    }
+
+    #searchInput {
+      width: 100%;
+      padding: 13px 48px 13px 18px;
+      background: #1e1e1e;
+      border: 1.5px solid #d4a0b0;
+      border-radius: 30px;
+      color: #f0f0f0;
+      font-size: 18px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    #searchInput::placeholder { color: #555; }
+    #searchInput:focus { border-color: #e8b8c8; box-shadow: 0 0 10px #d4a0b030; }
+
+    .search-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      opacity: 0.7;
+    }
+
+    /* ── 文字サイズボタン ── */
+    .size-label {
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    .size-controls {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .size-btn {
+      background: #1e1e1e;
+      border: 1px solid #d4a0b070;
+      color: #d4a0b0;
+      padding: 7px 18px;
+      border-radius: 20px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .size-btn.active {
+      background: #d4a0b0;
+      color: #111;
+      border-color: #d4a0b0;
+      font-weight: bold;
+    }
+
+    /* ── 結果グリッド ── */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .kanji-card {
+      background: #1a1a1a;
+      border: 1px solid #d4a0b035;
+      border-radius: 14px;
+      padding: 18px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .kanji-card:active {
+      background: #222;
+      border-color: #d4a0b0;
+    }
+
+    .kanji-main {
+      color: #d4a0b0;
+      font-weight: bold;
+      display: block;
+      line-height: 1.2;
+      text-shadow: 0 0 12px #d4a0b050;
+    }
+
+    .kanji-reading {
+      color: #666;
+      font-size: 12px;
+      display: block;
+    }
+
+    /* フォントサイズ切り替え */
+    .size-sm  .kanji-main { font-size: 28px; }
+    .size-md  .kanji-main { font-size: 42px; }
+    .size-lg  .kanji-main { font-size: 58px; }
+    .size-xl  .kanji-main { font-size: 74px; }
+
+    /* ── メッセージ ── */
+    .message {
+      text-align: center;
+      color: #444;
+      margin: 50px 0;
+      font-size: 16px;
+      line-height: 2;
+    }
+
+    .message .sub { font-size: 13px; color: #333; }
+
+    /* ── ローディング ── */
+    .loading {
+      text-align: center;
+      color: #d4a0b070;
+      margin: 50px 0;
+      font-size: 15px;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* ── コピー通知 ── */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #d4a0b0;
+      color: #111;
+      padding: 11px 26px;
+      border-radius: 24px;
+      font-size: 15px;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 999;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── エラー ── */
+    .error-msg {
+      text-align: center;
+      color: #885566;
+      margin: 40px 0;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="stamp">
+      <img src="icon.png" alt="漢字召喚">
+    </div>
+  </header>
+
+  <div class="search-wrap">
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="ひらがなで入力..."
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="none"
+      spellcheck="false"
+    >
+    <span class="search-icon">🔍</span>
+  </div>
+
+  <p class="size-label">文字の大きさ</p>
+  <div class="size-controls">
+    <button class="size-btn" data-size="sm">小</button>
+    <button class="size-btn active" data-size="md">中</button>
+    <button class="size-btn" data-size="lg">大</button>
+    <button class="size-btn" data-size="xl">特大</button>
+  </div>
+
+  <div id="results">
+    <div class="message">
+      ひらがなを入力すると<br>漢字を召喚します<br>
+      <span class="sub">✦ タップでコピー ✦</span>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">コピーしました！</div>
+
+  <script src="dictionary.js"></script>
+  <script>
+    let currentSize = 'md';
+    let debounceTimer = null;
+
+    // 文字サイズ切り替え
+    document.querySelectorAll('.size-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSize = btn.dataset.size;
+        document.querySelectorAll('.kanji-card').forEach(card => {
+          card.className = `kanji-card size-${currentSize}`;
+        });
+      });
+    });
+
+    // 入力イベント（300ms待ってから検索）
+    document.getElementById('searchInput').addEventListener('input', e => {
+      clearTimeout(debounceTimer);
+      const val = e.target.value.trim();
+      if (!val) {
+        showDefault();
+        return;
+      }
+      debounceTimer = setTimeout(() => search(val), 300);
+    });
+
+    function showDefault() {
+      document.getElementById('results').innerHTML = `
+        <div class="message">
+          ひらがなを入力すると<br>漢字を召喚します<br>
+          <span class="sub">✦ タップでコピー ✦</span>
+        </div>`;
+    }
+
+    function search(keyword) {
+      document.getElementById('results').innerHTML =
+        '<div class="loading">✦ 召喚中... ✦</div>';
+
+      // 完全一致 + 前方一致で検索
+      const items = [];
+      const seen = new Set();
+
+      // 完全一致を先に
+      if (DICT[keyword]) {
+        DICT[keyword].forEach(k => {
+          if (!seen.has(k)) { seen.add(k); items.push({ kanji: k, reading: keyword }); }
+        });
+      }
+
+      // 前方一致（入力が2文字以上のとき）
+      if (keyword.length >= 2) {
+        Object.keys(DICT).forEach(reading => {
+          if (reading !== keyword && reading.startsWith(keyword)) {
+            DICT[reading].forEach(k => {
+              if (!seen.has(k)) { seen.add(k); items.push({ kanji: k, reading }); }
+            });
+          }
+        });
+      }
+
+      if (items.length === 0) {
+        document.getElementById('results').innerHTML =
+          '<div class="message">見つかりませんでした<br><span class="sub">別のよみかたで試してみてください</span></div>';
+        return;
+      }
+
+      renderCards(items);
+    }
+
+    function renderCards(items) {
+      const grid = document.createElement('div');
+      grid.className = 'results-grid';
+
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = `kanji-card size-${currentSize}`;
+        card.innerHTML = `
+          <span class="kanji-main">${item.kanji}</span>
+          <span class="kanji-reading">${item.reading}</span>
+        `;
+        card.addEventListener('click', () => copyToClipboard(item.kanji));
+        grid.appendChild(card);
+      });
+
+      document.getElementById('results').innerHTML = '';
+      document.getElementById('results').appendChild(grid);
+    }
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast());
+      } else {
+        // fallback for older browsers
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast();
+      }
+    }
+
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // PWA Service Worker 登録
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
