@@ -10,23 +10,21 @@
     p { color:#888; font-size:14px; margin-bottom:28px; }
     #qrcode { display:inline-block; background:#fff; padding:16px; border-radius:16px; }
     .url { margin-top:20px; background:#1e1e1e; border-radius:12px; padding:14px 20px;
-           font-size:14px; color:#d4a0b0; word-break:break-all; }
-    .note { margin-top:12px; color:#666; font-size:12px; line-height:1.8; }
+           font-size:13px; color:#d4a0b0; word-break:break-all; }
   </style>
 </head>
 <body>
   <h2>漢字召喚 をスマホで開く</h2>
   <p>スマホのカメラでQRコードを読み取ってください</p>
   <div id="qrcode"></div>
-  <div class="url">https://slow-bears-wear.loca.lt</div>
-  <p class="note">⚠️ 初回アクセス時に確認画面が出たら<br>「Click to Submit」を押してください</p>
+  <div class="url">https://mochiko-50202.github.io/kanji-shoukan/</div>
 
   <script src="qrcode.min.js"></script>
   <script>
     new QRCode(document.getElementById('qrcode'), {
-      text: 'https://slow-bears-wear.loca.lt',
-      width: 220,
-      height: 220,
+      text: 'https://mochiko-50202.github.io/kanji-shoukan/',
+      width: 240,
+      height: 240,
       colorDark: '#000000',
       colorLight: '#ffffff',
     });
