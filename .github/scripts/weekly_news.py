@@ -25,24 +25,46 @@ def get_target_monday() -> datetime.date:
     return today - datetime.timedelta(days=today.weekday())
 
 
+GEMINI_MODELS = [
+    "gemini-2.5-flash",
+    "gemini-2.0-flash",
+    "gemini-1.5-flash",
+    "gemini-1.5-pro",
+]
+
 def call_gemini(prompt: str) -> list[dict]:
-    """Gemini APIを呼んでJSONリストを返す"""
-    url = (
-        "https://generativelanguage.googleapis.com/v1beta/models/"
-        f"gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
-    )
-    payload = {
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {
-            "temperature": 0.7,
-            "maxOutputTokens": 3000,
-            "responseMimeType": "application/json",
-        },
-    }
-    resp = requests.post(url, json=payload, timeout=90)
-    resp.raise_for_status()
-    text = resp.json()["candidates"][0]["content"]["parts"][0]["text"]
-    return json.loads(text)
+    """Gemini APIを呼んでJSONリストを返す（モデルを順番に試す）"""
+    base_url = "https://generativelanguage.googleapis.com/v1beta/models"
+    last_error = None
+    for model in GEMINI_MODELS:
+        url = f"{base_url}/{model}:generateContent?key={GEMINI_API_KEY}"
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {
+                "temperature": 0.7,
+                "maxOutputTokens": 3000,
+            },
+        }
+        try:
+            resp = requests.post(url, json=payload, timeout=90)
+            if resp.status_code == 404:
+                print(f"  モデル {model} は存在しません。次を試します...")
+                continue
+            resp.raise_for_status()
+            text = resp.json()["candidates"][0]["content"]["parts"][0]["text"]
+            print(f"  モデル {model} で生成成功")
+            # JSON部分を抽出してパース
+            text = text.strip()
+            start = text.find("[")
+            end = text.rfind("]") + 1
+            if start != -1 and end > start:
+                text = text[start:end]
+            return json.loads(text)
+        except Exception as e:
+            last_error = e
+            print(f"  モデル {model} でエラー: {e}")
+            continue
+    raise RuntimeError(f"全モデルで失敗しました。最後のエラー: {last_error}")
 
 
 def build_notion_blocks(items: list[dict]) -> list[dict]:
