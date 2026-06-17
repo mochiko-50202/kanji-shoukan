@@ -3,16 +3,18 @@
     {
       "id": "jelly-fish",
       "name_ja": "Jelly-fish",
-      "name_en": "Jelly-fish"
+      "name_en": "Jelly-fish",
+      "label_name": "Jelly-fish",
+      "copyright_holder": "Jelly-fish"
     },
     {
       "id": "tandori",
       "name_ja": "TANDORI-聖なる胃袋-",
-      "name_en": "TANDORI-Holy Stomach-"
+      "name_en": "TANDORI-Holy Stomach-",
+      "label_name": "TANDORI-聖なる胃袋-",
+      "copyright_holder": "TANDORI-聖なる胃袋-"
     }
   ],
-  "label_name": "",
-  "copyright_holder": "",
   "lyricist": "",
   "composer": "",
   "arranger": "",

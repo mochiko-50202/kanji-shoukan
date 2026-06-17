@@ -31,11 +31,11 @@ def get_recording_year() -> int:
     return int(os.environ.get("RECORDING_YEAR", "2026"))
 
 
-def build_copyright(year: int) -> str:
-    holder = load().get("copyright_holder", "")
+def build_copyright(year: int, artist: dict) -> str:
+    holder = artist.get("copyright_holder", "")
     return f"© {year} {holder}" if holder else ""
 
 
-def build_phonogram(year: int) -> str:
-    label = load().get("label_name", "")
+def build_phonogram(year: int, artist: dict) -> str:
+    label = artist.get("label_name", "")
     return f"℗ {year} {label}" if label else ""

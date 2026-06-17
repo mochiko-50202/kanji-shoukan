@@ -150,8 +150,8 @@ async def generate(
         warnings.append(f"ジャンル「{raw['genre']}」はTuneCoreのリストにない可能性があります（要確認）")
 
     # 著作権フィールドはサーバー側で組み立て（Geminiに任せない）
-    copyright_notice = cfg.build_copyright(year)
-    phonogram_copyright = cfg.build_phonogram(year)
+    copyright_notice = cfg.build_copyright(year, artist)
+    phonogram_copyright = cfg.build_phonogram(year, artist)
     if not copyright_notice:
         warnings.append("tunecore_config.json の copyright_holder が未設定です")
     if not phonogram_copyright:
