@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 8000
 
 # $PORT は Railway が実行時に注入する — ハードコード厳禁
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --limit-request-body 20971520"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
