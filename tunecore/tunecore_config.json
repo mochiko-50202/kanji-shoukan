@@ -1,0 +1,28 @@
+{
+  "artists": [
+    {
+      "id": "jelly-fish",
+      "name_ja": "Jelly-fish",
+      "name_en": "Jelly-fish"
+    },
+    {
+      "id": "tandori",
+      "name_ja": "TANDORI-聖なる胃袋-",
+      "name_en": "TANDORI-Holy Stomach-"
+    }
+  ],
+  "label_name": "",
+  "copyright_holder": "",
+  "lyricist": "",
+  "composer": "",
+  "arranger": "",
+  "explicit_content": false,
+  "genres": [
+    "Alternative", "Anime", "Blues", "Children's Music", "Classical",
+    "Comedy", "Country", "Dance", "Electronic", "Folk", "Gospel",
+    "Hip-Hop/Rap", "Holiday", "Indie Pop", "J-Pop", "J-Rock",
+    "Jazz", "Latin", "Metal", "New Age", "Pop", "R&B/Soul",
+    "Reggae", "Rock", "Singer/Songwriter", "Soundtrack",
+    "Spoken Word", "Vocal", "World Music"
+  ]
+}
